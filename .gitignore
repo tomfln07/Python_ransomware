@@ -1,1 +1,3 @@
 decrypt_key.key
+output
+local_target_files/*
