@@ -1,8 +1,13 @@
-<h1>Python Ransomware</h1>
+# Python Ransomware
+Launch main.py to test the ransomware, it's in local mode by default (see **modes** below for more infos)
 
-<h3><i>To test the ransomware:</i></h3>
-<ul>
-    <li>See a demo by launching ransomware.py</li>
-    <li>The encryption is local by debault (it will only encrypt files in ./local_target_files)</li>
-    <li>Set it global (encrypt desktop directory) by initializing the ransomware with the "global" parameter</li>
-</ul>
+## *Modes*
+*Change it by initializing the ransomware with the "global" parameter in main.py*
+
+### *Local*
+* Will only encrypt files in ./local_target_files</p>
+
+### *Global*
+* Will encrypt user dirs like desktop, download, picture, video etc...
+
+👋
